@@ -11,8 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.timetogo.db.entity.ListItem;
+
 import java.util.ArrayList;
-import java.util.List;
 
 public class CustomAdapter extends ArrayAdapter<ListItem> {
 
