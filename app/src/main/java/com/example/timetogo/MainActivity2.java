@@ -7,20 +7,19 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.timetogo.adapter.CustomAdapter;
-import com.example.timetogo.adapter.OnItemClickListener;
+import com.example.timetogo.adapter.OnItemLongClickListener;
 import com.example.timetogo.db.DatabaseHelper;
 import com.example.timetogo.db.entity.ListItem;
 
 import java.util.ArrayList;
 
-public class MainActivity2 extends AppCompatActivity implements OnItemClickListener {
+public class MainActivity2 extends AppCompatActivity implements OnItemLongClickListener {
 
 
     ListView listView;
@@ -38,6 +37,18 @@ public class MainActivity2 extends AppCompatActivity implements OnItemClickListe
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_edit_delete_task, null);
         builder.setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        Button deleteBtn = findViewById(R.id.deleteBtn);
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
     }
 
 
@@ -63,13 +74,6 @@ public class MainActivity2 extends AppCompatActivity implements OnItemClickListe
                 long id = db.insertContact(addedName, addedTime);
                 // Ustaw id nowego elementu
                 newItem.setId(90);
-
-
-
-                // Dodaj nowy element do listy
-//                dataModels.add(newItem);
-                // Powiadom adapter o zmianach w danych
- //               adapter.notifyDataSetChanged();
 
 
 
@@ -105,7 +109,7 @@ public class MainActivity2 extends AppCompatActivity implements OnItemClickListe
 
         adapter = new CustomAdapter(dataModels,getApplicationContext());
 
-        adapter.setOnItemClickListener(this);
+        adapter.setOnItemLongClickListener(this);
 
         listView.setAdapter(adapter);
 
@@ -123,18 +127,17 @@ public class MainActivity2 extends AppCompatActivity implements OnItemClickListe
             }
         });
 
-
-
-
-
-
     }
 
     @Override
-    public void onItemClick(ListItem listItem){
+    public void onItemLongClick(ListItem listItem){
 
         String clickedActivityName = listItem.getNameActivity();
         String clickedActivityTime = listItem.getTimeActivity();
+
+        showDeleteEditDialog();
+
+
 
         Toast.makeText(this, "Kliknięto: " + clickedActivityName, Toast.LENGTH_SHORT).show();
 

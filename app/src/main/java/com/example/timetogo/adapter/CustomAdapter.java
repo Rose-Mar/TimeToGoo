@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,11 +21,11 @@ public class CustomAdapter extends ArrayAdapter<ListItem> {
     private ArrayList<ListItem> itemArrayList;
     private Context context;
     private DatabaseHelper databaseHelper;
-    private OnItemClickListener onItemClickListener;
+    private OnItemLongClickListener onItemLongClickListener;
 
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.onItemClickListener = listener;
+    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
+        this.onItemLongClickListener = listener;
     }
 
     public CustomAdapter(ArrayList<ListItem> data, Context context) {
@@ -67,13 +66,15 @@ public class CustomAdapter extends ArrayAdapter<ListItem> {
             viewHolder.txtName.setText(listItem.getNameActivity());
             viewHolder.txtTime.setText(listItem.getTimeActivity());
 
-            convertView.setOnClickListener(new View.OnClickListener() {
+            convertView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public void onClick(View v) {
+                public boolean onLongClick(View v) {
 
-                    if(onItemClickListener  != null){
-                        onItemClickListener.onItemClick(listItem);
+                    if(onItemLongClickListener != null){
+                        onItemLongClickListener.onItemLongClick(listItem);
                     }
+
+                    return true;
 
                 }
             });
