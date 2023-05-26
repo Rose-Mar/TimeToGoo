@@ -7,15 +7,20 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.example.timetogo.adapter.CustomAdapter;
+import com.example.timetogo.adapter.OnItemClickListener;
+import com.example.timetogo.db.DatabaseHelper;
 import com.example.timetogo.db.entity.ListItem;
 
 import java.util.ArrayList;
 
-public class MainActivity2 extends AppCompatActivity {
+public class MainActivity2 extends AppCompatActivity implements OnItemClickListener {
 
 
     ListView listView;
@@ -23,8 +28,17 @@ public class MainActivity2 extends AppCompatActivity {
 
     private static CustomAdapter adapter;
 
-    ArrayList<ListItem> dataModels;
 
+
+    private DatabaseHelper db ;
+
+
+
+    public void showDeleteEditDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_edit_delete_task, null);
+        builder.setView(dialogView);
+    }
 
 
 
@@ -44,10 +58,21 @@ public class MainActivity2 extends AppCompatActivity {
                 String addedName = addName.getText().toString();
                 String addedTime = addTime.getText().toString();
 
-                dataModels.add(new ListItem(addedName, addedTime, false));
+                ListItem newItem = new ListItem(addedName, addedTime, 90);
+                // Dodaj nowy element do bazy danych
+                long id = db.insertContact(addedName, addedTime);
+                // Ustaw id nowego elementu
+                newItem.setId(90);
 
-                //TODO
-                //dodać dodawanie do listy
+
+
+                // Dodaj nowy element do listy
+//                dataModels.add(newItem);
+                // Powiadom adapter o zmianach w danych
+ //               adapter.notifyDataSetChanged();
+
+
+
             }
         });
 
@@ -60,8 +85,8 @@ public class MainActivity2 extends AppCompatActivity {
 
         AlertDialog dialog = builder.create();
         dialog.show();
-
     }
+
 
 
     @Override
@@ -70,24 +95,17 @@ public class MainActivity2 extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
 
 
+        db = new DatabaseHelper(this);
+
+        ArrayList<ListItem> dataModels = db.getAkkItems();
 
         //AdapterView a list view
         listView = findViewById(R.id.listview);
 
-        //Data sourse
-        dataModels = new ArrayList<>();
 
-        dataModels.add(new ListItem("pranie", "15", false));
-        dataModels.add(new ListItem("sprzątanie", "12", false));
-        dataModels.add(new ListItem("prysznic", "10", true));
-        dataModels.add(new ListItem("makijaz", "4", false));
-        dataModels.add(new ListItem("dojscie", "12", true));
-
-
-
-        //Adapter
         adapter = new CustomAdapter(dataModels,getApplicationContext());
 
+        adapter.setOnItemClickListener(this);
 
         listView.setAdapter(adapter);
 
@@ -99,6 +117,8 @@ public class MainActivity2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 showAddDialog();
+                adapter.notifyDataSetChanged();
+                listView.invalidate();
 
             }
         });
@@ -106,5 +126,24 @@ public class MainActivity2 extends AppCompatActivity {
 
 
 
+
+
     }
+
+    @Override
+    public void onItemClick(ListItem listItem){
+
+        String clickedActivityName = listItem.getNameActivity();
+        String clickedActivityTime = listItem.getTimeActivity();
+
+        Toast.makeText(this, "Kliknięto: " + clickedActivityName, Toast.LENGTH_SHORT).show();
+
+
+
+    }
+
+
+
+
+
 }

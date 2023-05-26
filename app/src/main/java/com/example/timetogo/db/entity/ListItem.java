@@ -17,15 +17,26 @@ public class ListItem {
     private String nameActivity;
     private String timeActivity;
     private boolean check;
+    private int id;
 
-    private ListItem(){
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
+
+    public ListItem(){
 
     }
 
-    public ListItem(String nameActivity, String timeActivity, boolean check) {
+    public ListItem(String nameActivity, String timeActivity, int id) {
         this.nameActivity = nameActivity;
         this.timeActivity = timeActivity;
-        this.check = check;
+        this.id = id;
     }
 
     public String getNameActivity() {
@@ -60,8 +71,8 @@ public class ListItem {
 
 
     public static final String CREATE_TABLE =
-            "CREATE TABLE" + TABLE_NAME + "("
-            + COLUMN_ID + "INTEGER PRIMARY KEY AUTOINCREMENT, "
+            "CREATE TABLE " + TABLE_NAME + "("
+            + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + COLUMN_NAME + " TEXT,"
             + COLUMN_TIME + " DATETIME DEFAULT CURRENT_TIMESTAMP"
             + ")";

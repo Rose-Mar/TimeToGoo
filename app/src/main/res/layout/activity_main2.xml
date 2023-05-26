@@ -8,20 +8,23 @@
 
     <ListView
         android:id="@+id/listview"
-        android:layout_width="393dp"
-        android:layout_height="695dp"
+        android:layout_width="394dp"
+        android:layout_height="648dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.888"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.96" />
+        app:layout_constraintVertical_bias="1.0">
+
+
+    </ListView>
 
     <Button
         android:id="@+id/addBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="208dp"
+        android:layout_marginStart="236dp"
 
 
         android:text="Dodaj czynność"
@@ -29,8 +32,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.073"
-        />
-<!--        tools:ignore="OnClick" />-->
+        app:layout_constraintVertical_bias="0.023" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

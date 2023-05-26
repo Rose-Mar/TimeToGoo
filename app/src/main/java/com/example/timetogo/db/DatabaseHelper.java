@@ -26,10 +26,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-
-        sqLiteDatabase.execSQL(ListItem.CREATE_TABLE);
-
+        sqLiteDatabase.execSQL(ListItem.CREATE_TABLE );
     }
+
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
@@ -81,9 +80,9 @@ public long insertContact(String name, String time){
             cursor.moveToFirst();
 
         ListItem listItem = new ListItem(
-                cursor.getString(cursor.getColumnIndex(ListItem.COLUMN_NAME)),
-                cursor.getString(cursor.getColumnIndex(ListItem.COLUMN_TIME)),
-                cursor.getInt(cursor.getColumnIndex(ListItem.COLUMN_ID))
+                cursor.getString(cursor.getColumnIndexOrThrow(ListItem.COLUMN_NAME)),
+                cursor.getString(cursor.getColumnIndexOrThrow(ListItem.COLUMN_TIME)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(ListItem.COLUMN_ID))
         );
         cursor.close();
         return listItem;
@@ -92,7 +91,49 @@ public long insertContact(String name, String time){
 
     //Getting all Items
 
-    public ArrayList<ListItem>
+    public ArrayList<ListItem> getAkkItems(){
+        ArrayList<ListItem> listItems = new ArrayList<>();
+
+
+        String selectQuery = "SELECT * FROM " + ListItem.TABLE_NAME + " ORDER BY " +
+                ListItem.COLUMN_ID + " DESC";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if(cursor.moveToFirst()){
+            do{
+                ListItem listItem = new ListItem();
+                listItem.setId(cursor.getInt(cursor.getColumnIndexOrThrow(ListItem.COLUMN_ID)));
+                listItem.setNameActivity(cursor.getString(cursor.getColumnIndexOrThrow(ListItem.COLUMN_NAME)));
+                listItem.setTimeActivity(cursor.getString(cursor.getColumnIndexOrThrow(ListItem.COLUMN_TIME)));
+
+                listItems.add(listItem);
+            }while(cursor.moveToNext());
+        }
+        db.close();
+        return listItems;
+    }
+
+    public int updateListItem(ListItem listItem) {
+     SQLiteDatabase db = this.getWritableDatabase();
+
+     ContentValues values = new ContentValues();
+     values.put(ListItem.COLUMN_NAME, listItem.getNameActivity());
+     values.put(ListItem.COLUMN_TIME, listItem.getTimeActivity());
+
+     return db.update(ListItem.TABLE_NAME, values, ListItem.COLUMN_ID+ " =? ",
+             new String[]{String.valueOf(listItem.getId())});
+    }
+
+
+
+    public void deleteItem(ListItem listItem){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(ListItem.TABLE_NAME, ListItem.COLUMN_ID + " = ?",
+                new String[]{String.valueOf(listItem.getId())});
+
+        db.close();
+    }
 
 
 }
