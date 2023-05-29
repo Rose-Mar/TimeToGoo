@@ -158,7 +158,7 @@ public class MainActivity2 extends AppCompatActivity implements OnItemLongClickL
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(MainActivity2.this, "czas: " + totalTime, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity2.this, "czas: " + totalTime, Toast.LENGTH_SHORT).show();
 
 
 
@@ -284,7 +284,7 @@ public class MainActivity2 extends AppCompatActivity implements OnItemLongClickL
 
 
 
-        Toast.makeText(MainActivity2.this, "Suma czasów: " + totalTime, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(MainActivity2.this, "Suma czasów: " + totalTime, Toast.LENGTH_SHORT).show();
 
 
 

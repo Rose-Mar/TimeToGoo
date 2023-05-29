@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TimePicker;
+import android.widget.Toast;
+
+import com.example.timetogo.db.entity.Activitis;
 
 import java.util.Calendar;
 
@@ -18,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        Activity activity = new Activity();
+        Activitis activitis = Activitis.getInstance();
 
         TimePicker timePicker = findViewById(R.id.timePicker);
         Button nextButton = findViewById(R.id.nextBtn);
@@ -37,8 +40,18 @@ public class MainActivity extends AppCompatActivity {
                 calendar.set(Calendar.MINUTE, minute);
 
                 long selectedTimeInMillis = calendar.getTimeInMillis();
+                Toast.makeText(MainActivity.this, "currentTime: " + selectedTimeInMillis, Toast.LENGTH_SHORT).show();
 
-                activity.setTimeToLeave(selectedTimeInMillis);
+
+                Intent intentTime = new Intent(MainActivity.this, MainActivity3.class);
+                intentTime.putExtra("selectedTimeInMillis", selectedTimeInMillis);
+
+//
+
+                activitis.setTimeToLeave(selectedTimeInMillis);
+
+
+
 
                 Intent intent = new Intent(MainActivity.this, MainActivity2.class);
                 startActivity(intent);
