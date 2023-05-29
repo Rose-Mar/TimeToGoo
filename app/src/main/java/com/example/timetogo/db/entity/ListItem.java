@@ -15,9 +15,10 @@ public class ListItem {
 
 
     private String nameActivity;
-    private String timeActivity;
+    private int timeActivity;
     private boolean check;
     private int id;
+
 
     public int getId() {
         return id;
@@ -33,10 +34,16 @@ public class ListItem {
 
     }
 
-    public ListItem(String nameActivity, String timeActivity, int id) {
+    public ListItem(String nameActivity, int timeActivity, int id) {
         this.nameActivity = nameActivity;
         this.timeActivity = timeActivity;
         this.id = id;
+    }
+    public ListItem(String nameActivity, int timeActivity, int id, boolean check) {
+        this.nameActivity = nameActivity;
+        this.timeActivity = timeActivity;
+        this.id = id;
+        this.check = check;
     }
 
     public String getNameActivity() {
@@ -47,11 +54,11 @@ public class ListItem {
         this.nameActivity = nameActivity;
     }
 
-    public String getTimeActivity() {
+    public int getTimeActivity() {
         return timeActivity;
     }
 
-    public void setTimeActivity(String timeActivity) {
+    public void setTimeActivity(int timeActivity) {
         this.timeActivity = timeActivity;
     }
 

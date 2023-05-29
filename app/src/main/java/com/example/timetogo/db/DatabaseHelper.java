@@ -41,7 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Insert Data into Database
 
-public long insertContact(String name, String time){
+public long insertContact(String name, int time){
         SQLiteDatabase db = this.getWritableDatabase();
 
 
@@ -81,8 +81,9 @@ public long insertContact(String name, String time){
 
         ListItem listItem = new ListItem(
                 cursor.getString(cursor.getColumnIndexOrThrow(ListItem.COLUMN_NAME)),
-                cursor.getString(cursor.getColumnIndexOrThrow(ListItem.COLUMN_TIME)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(ListItem.COLUMN_TIME)),
                 cursor.getInt(cursor.getColumnIndexOrThrow(ListItem.COLUMN_ID))
+
         );
         cursor.close();
         return listItem;
@@ -105,7 +106,7 @@ public long insertContact(String name, String time){
                 ListItem listItem = new ListItem();
                 listItem.setId(cursor.getInt(cursor.getColumnIndexOrThrow(ListItem.COLUMN_ID)));
                 listItem.setNameActivity(cursor.getString(cursor.getColumnIndexOrThrow(ListItem.COLUMN_NAME)));
-                listItem.setTimeActivity(cursor.getString(cursor.getColumnIndexOrThrow(ListItem.COLUMN_TIME)));
+                listItem.setTimeActivity(cursor.getInt(cursor.getColumnIndexOrThrow(ListItem.COLUMN_TIME)));
 
                 listItems.add(listItem);
             }while(cursor.moveToNext());
@@ -133,6 +134,13 @@ public long insertContact(String name, String time){
                 new String[]{String.valueOf(listItem.getId())});
 
         db.close();
+    }
+
+
+
+
+    public int timeLeft(){
+        return 0;
     }
 
 

@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,6 +24,24 @@ public class CustomAdapter extends ArrayAdapter<ListItem> {
     private Context context;
     private DatabaseHelper databaseHelper;
     private OnItemLongClickListener onItemLongClickListener;
+    private OnCheckedChangeListener onCheckedChangeListener;
+
+
+
+
+
+    @Override
+    public ListItem getItem(int position){
+        return itemArrayList.get(position);
+    }
+
+
+
+    public void setOnCheckedChangeListener(OnCheckedChangeListener listener) {
+        this.onCheckedChangeListener = listener;
+    }
+
+
 
 
     public void setOnItemLongClickListener(OnItemLongClickListener listener) {
@@ -38,7 +58,7 @@ public class CustomAdapter extends ArrayAdapter<ListItem> {
     private static class ViewHolder {
         TextView txtName;
         TextView txtTime;
-//        CheckBox checkBox;
+        CheckBox checkBox;
     }
 
     @NonNull
@@ -53,7 +73,7 @@ public class CustomAdapter extends ArrayAdapter<ListItem> {
 
             viewHolder.txtName = convertView.findViewById(R.id.activityName);
             viewHolder.txtTime = convertView.findViewById(R.id.activityTime);
-//            viewHolder.checkBox = convertView.findViewById(R.id.checkBox);
+            viewHolder.checkBox = convertView.findViewById(R.id.checkBox);
 
             convertView.setTag(viewHolder);
         } else {
@@ -64,7 +84,7 @@ public class CustomAdapter extends ArrayAdapter<ListItem> {
 
         if (listItem != null) {
             viewHolder.txtName.setText(listItem.getNameActivity());
-            viewHolder.txtTime.setText(listItem.getTimeActivity());
+            viewHolder.txtTime.setText(String.valueOf(listItem.getTimeActivity()));
 
             convertView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -83,21 +103,29 @@ public class CustomAdapter extends ArrayAdapter<ListItem> {
 
 
 
-//            viewHolder.checkBox.setChecked(listItem.isCheck());
+            viewHolder.checkBox.setChecked(listItem.isCheck());
         }
 
-//        viewHolder.checkBox.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                CheckBox checkBox = (CheckBox) v;
-//                ListItem listItem = getItem(position);
-//                if (listItem != null) {
-//                    listItem.setCheck(checkBox.isChecked());
-//                    databaseHelper.updateListItem(listItem);
-//                }
-//            }
-//        });
+
+
+        viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (onCheckedChangeListener != null) {
+                    onCheckedChangeListener.onItemCheckedChange(position, isChecked);
+                }
+            }
+        });
+
+
+
 
         return convertView;
     }
+
+
+
+
+
+
 }
