@@ -85,17 +85,24 @@ public class MainActivity2 extends AppCompatActivity implements OnItemLongClickL
         builder.setPositiveButton("Dodaj", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String addedName = addName.getText().toString();
-                int addedTime = Integer.parseInt(addTime.getText().toString());
+                try {
+                    String addedName = addName.getText().toString();
+                    int addedTime = Integer.parseInt(addTime.getText().toString());
 
-                // Dodaj nowy element do bazy danych
-                long id = db.insertContact(addedName, addedTime);
+                    // Dodaj nowy element do bazy danych
+                    long id = db.insertContact(addedName, addedTime);
 
-                ListItem newItem = new ListItem(addedName, addedTime, 90);
+                    ListItem newItem = new ListItem(addedName, addedTime, 90);
 
-                adapter.notifyDataSetChanged();
+                    adapter.notifyDataSetChanged();
 
-                refreshListView();
+                    refreshListView();
+                }
+                catch (Exception e) {
+                    Toast.makeText(MainActivity2.this, "Wprowadź ponownie aktywność", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+
+                }
 
 
 
@@ -134,7 +141,7 @@ public class MainActivity2 extends AppCompatActivity implements OnItemLongClickL
         adapter = new CustomAdapter(dataModels,getApplicationContext());
 
         adapter.setOnItemLongClickListener(this);
-        adapter.setOnCheckedChangeListener(this);
+//        adapter.setOnCheckedChangeListener(this);
 
         listView.setAdapter(adapter);
 
@@ -158,94 +165,34 @@ public class MainActivity2 extends AppCompatActivity implements OnItemLongClickL
             @Override
             public void onClick(View v) {
 
-//                Toast.makeText(MainActivity2.this, "czas: " + totalTime, Toast.LENGTH_SHORT).show();
+                totalTime = 0;
 
-
-
-                if(totalTime == 0){
-                    Toast.makeText(MainActivity2.this, "Nie zaznaczono żadnych elementów.", Toast.LENGTH_SHORT).show();
-                                }
-                else {
-                    Intent intent = new Intent(MainActivity2.this, MainActivity3.class);
-                    intent.putExtra("totalTime", totalTime);
-                    startActivity(intent);
+                SparseBooleanArray selectedItems = adapter.getCheckedItems();
+                ArrayList<Integer> idList = new ArrayList<>();
+                for (int i = 0; i<selectedItems.size();i++){
+                    int item = selectedItems.keyAt(i);
+                    idList.add(item);
                 }
 
+                if(selectedItems.size()==0){
+                    Toast.makeText(MainActivity2.this, "Nie zaznaczono żadnych elementów.", Toast.LENGTH_SHORT).show();
+                }else{
 
-//                if (listView.getCheckedItemCount() > 0) {
-//                    SparseBooleanArray checkedItems = listView.getCheckedItemPositions();
-//                    ArrayList<ListItem> selectedActivities = new ArrayList<>();
-//
-//                    for (int i = 0; i < checkedItems.size(); i++) {
-//                        int position = checkedItems.keyAt(i);
-//                        if (checkedItems.valueAt(i)) {
-//                            ListItem listItem = adapter.getItem(position);
-//                            int time = Integer.parseInt(listItem.getTimeActivity());
-//                            totalTime += time;
-//                            selectedActivities.add(adapter.getItem(position));
-//                        }
-//                    }
-//
-//                    Toast.makeText(MainActivity2.this, "Suma czasów: " + totalTime, Toast.LENGTH_SHORT).show();
-//
-//                    // Przekazanie danych do następnej aktywności
-//                    Intent intent = new Intent(MainActivity2.this, MainActivity3.class);
-//                    intent.putExtra("totalTime", totalTime);
-//                    // Możesz również przekazać listę wybranych czynności za pomocą Parcelable lub Serializable
-//                    startActivity(intent);
-//                } else {
-//                    Toast.makeText(MainActivity2.this, "Nie zaznaczono żadnych elementów.", Toast.LENGTH_SHORT).show();
-//                }
+                    Toast.makeText(MainActivity2.this, "Zaznaczone: " + idList, Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(MainActivity2.this, MainActivity3.class);
+                    intent.putExtra("idList", idList);
+                    startActivity(intent);
+
+
+                }
+
             }
         });
     }
 
-//
-//
-////                if (!dataModels.isEmpty()) {
-////                    ListItem firstItem = dataModels.get(0);
-////                    boolean isCheckboxChecked = firstItem.isCheck();
-////                    Toast.makeText(MainActivity2.this, "Nie zaznaczono żadnych elementów." + isCheckboxChecked, Toast.LENGTH_SHORT).show();
-////
-////                    // Tutaj możesz użyć wartości isCheckboxChecked do odpowiednich działań
-////                    // np. sprawdzenia czy jest zaznaczony lub nie
-////                } else {
-////                    // Lista jest pusta, nie ma pierwszej pozycji
-////                }
-//
-//
-//                if(listView.getCheckedItemCount()>0){
-//                    SparseBooleanArray checkedItems = listView.getCheckedItemPositions();
-//
-//                }else{
-//                    Toast.makeText(MainActivity2.this, "Nie zaznaczono żadnych elementów.", Toast.LENGTH_SHORT).show();
-//
-//                }
-//
-////                SparseBooleanArray checkedItems = listView.getCheckedItemPositions();
-////                int selectedCount = checkedItems.size();
-////                Toast.makeText(MainActivity2.this, "Nie wybrano żadnych elementów." + selectedCount, Toast.LENGTH_SHORT).show();
-////                ArrayList<ListItem> selectedActivities = new ArrayList<>();
-////                for(int i = 0; i<checkedItems.size();i++) {
-////                    int position = checkedItems.keyAt(i);
-////                    if(checkedItems.valueAt(i)){
-////                        ListItem listItem = adapter.getItem(position);
-////                        int time = Integer.parseInt(listItem.getTimeActivity());
-////                        totalTime +=time;
-////                        selectedActivities.add(adapter.getItem(position));
-////                    }
-////                }
-////
-////                Toast.makeText(MainActivity2.this, "Suma czasów: " + totalTime, Toast.LENGTH_SHORT).show();
-////
-//
-////                Intent intent = new Intent(MainActivity2.this, MainActivity3.class);
-////                intent.putExtra("totalTime", totalTime);
-////                startActivity(intent);
-//            }
-//        });
-//
-//    }
+
+
 
     @Override
     public void onItemLongClick(ListItem listItem){
@@ -278,14 +225,6 @@ public class MainActivity2 extends AppCompatActivity implements OnItemLongClickL
             int time = listItem.getTimeActivity();
             totalTime -= time;
         }
-
-
-
-
-
-
-//        Toast.makeText(MainActivity2.this, "Suma czasów: " + totalTime, Toast.LENGTH_SHORT).show();
-
 
 
     }

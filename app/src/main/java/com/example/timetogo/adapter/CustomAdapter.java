@@ -1,6 +1,7 @@
 package com.example.timetogo.adapter;
 
 import android.content.Context;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +27,10 @@ public class CustomAdapter extends ArrayAdapter<ListItem> {
     private DatabaseHelper databaseHelper;
     private OnItemLongClickListener onItemLongClickListener;
     private OnCheckedChangeListener onCheckedChangeListener;
+    private SparseBooleanArray checkedItems;
+
+
+    ViewHolder viewHolder;
 
 
 
@@ -42,8 +48,6 @@ public class CustomAdapter extends ArrayAdapter<ListItem> {
     }
 
 
-
-
     public void setOnItemLongClickListener(OnItemLongClickListener listener) {
         this.onItemLongClickListener = listener;
     }
@@ -53,6 +57,7 @@ public class CustomAdapter extends ArrayAdapter<ListItem> {
         this.itemArrayList = data;
         this.context = context;
         databaseHelper = new DatabaseHelper(context);
+        checkedItems = new SparseBooleanArray();
     }
 
     private static class ViewHolder {
@@ -61,10 +66,13 @@ public class CustomAdapter extends ArrayAdapter<ListItem> {
         CheckBox checkBox;
     }
 
+
+
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        ViewHolder viewHolder;
+
 
         if (convertView == null) {
             viewHolder = new ViewHolder();
@@ -85,6 +93,8 @@ public class CustomAdapter extends ArrayAdapter<ListItem> {
         if (listItem != null) {
             viewHolder.txtName.setText(listItem.getNameActivity());
             viewHolder.txtTime.setText(String.valueOf(listItem.getTimeActivity()));
+            viewHolder.checkBox.setChecked(listItem.isCheck());
+
 
             convertView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -99,18 +109,13 @@ public class CustomAdapter extends ArrayAdapter<ListItem> {
                 }
             });
 
-
-
-
-
-            viewHolder.checkBox.setChecked(listItem.isCheck());
         }
-
-
 
         viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                listItem.setCheck(isChecked);
+
                 if (onCheckedChangeListener != null) {
                     onCheckedChangeListener.onItemCheckedChange(position, isChecked);
                 }
@@ -121,6 +126,20 @@ public class CustomAdapter extends ArrayAdapter<ListItem> {
 
 
         return convertView;
+    }
+
+
+    public SparseBooleanArray getCheckedItems(){
+        SparseBooleanArray selectedItems = new SparseBooleanArray();
+
+        for (int i = 0 ; i<itemArrayList.size(); i++){
+
+            if(itemArrayList.get(i).isCheck()) {
+                int id = itemArrayList.get(i).getId();
+                selectedItems.put(id, true);
+            }
+        }
+        return selectedItems;
     }
 
 

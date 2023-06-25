@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
         TimePicker timePicker = findViewById(R.id.timePicker);
         Button nextButton = findViewById(R.id.nextBtn);
+        timePicker.setIs24HourView(true);
 
         //TODO
         // Obsługę tego, że ktoś nie przestawi zegara z pozycji początkowej

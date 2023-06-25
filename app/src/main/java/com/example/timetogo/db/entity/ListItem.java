@@ -33,6 +33,9 @@ public class ListItem {
     public ListItem(){
 
     }
+    public ListItem(String nameActivity){
+        this.nameActivity = nameActivity;
+    }
 
     public ListItem(String nameActivity, int timeActivity, int id) {
         this.nameActivity = nameActivity;

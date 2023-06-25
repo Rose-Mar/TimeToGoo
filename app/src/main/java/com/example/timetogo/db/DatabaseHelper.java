@@ -59,7 +59,7 @@ public long insertContact(String name, int time){
 
 //Getting Items from DataBase
 
-    public ListItem getListItem (long id){
+    public ListItem getListItem (int id){
         SQLiteDatabase db = this. getReadableDatabase();
         Cursor cursor = db.query(ListItem.TABLE_NAME,
                 new String[]{
@@ -134,6 +134,26 @@ public long insertContact(String name, int time){
                 new String[]{String.valueOf(listItem.getId())});
 
         db.close();
+    }
+
+
+    public ListItem getListItemById (int id){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(
+                ListItem.TABLE_NAME,
+                new String[] {ListItem.COLUMN_NAME},
+                ListItem.COLUMN_ID + " = ?",
+                new String[] {String.valueOf(id)},
+                null,
+                null,
+                null
+        );
+        if (cursor != null && cursor.moveToFirst()){
+            String name = cursor.getString(cursor.getColumnIndexOrThrow(ListItem.COLUMN_NAME));
+            cursor.close();
+            return new ListItem(name);
+        }
+        return null;
     }
 
 

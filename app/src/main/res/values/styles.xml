@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <style name="TimePickerStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:textColorPrimary">@color/yellow_900</item>
+<!--        <item name="android:background">@color/background</item>-->
+<!--        <item name="android:headerBackground">@color/gray_150</item>-->
+<!--        <item name="android:numbersSelectorTextColor"></item>-->
+        <item name="android:textColor">@color/gray_150</item>
+    </style>
+
+
+
+
+
+</resources>

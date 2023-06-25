@@ -1,0 +1,15 @@
+<!-- activity_splash.xml -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:gravity="center">
+
+    <!-- Dodaj logo lub inne elementy UI dla ekranu powitalnego -->
+    <ImageView
+        android:layout_width="302dp"
+        android:layout_height="395dp"
+        android:src="@drawable/splash_logo" />
+
+</RelativeLayout>
