@@ -24,21 +24,63 @@ import java.util.ArrayList;
 
 public class MainActivity2 extends AppCompatActivity implements OnItemLongClickListener, OnCheckedChangeListener {
 
+    private ListView listView;
+    private CustomAdapter adapter;
+    private DatabaseHelper db;
+    private int totalTime = 0;
 
-    ListView listView;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main2);
 
+        db = new DatabaseHelper(this);
 
-    private static CustomAdapter adapter;
+        ArrayList<ListItem> dataModels = db.getAllItems();
 
+        listView = findViewById(R.id.listview);
+        adapter = new CustomAdapter(dataModels, getApplicationContext());
+        adapter.setOnItemLongClickListener(this::onItemLongClick);
+        listView.setAdapter(adapter);
 
+        Button btnAddToDo = findViewById(R.id.addBtn);
+        btnAddToDo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAddDialog();
+            }
+        });
 
-    private DatabaseHelper db ;
+        Button nextBtn = findViewById(R.id.nextCountingBtn);
+        nextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                totalTime = 0;
+                SparseBooleanArray selectedItems = adapter.getCheckedItems();
+                ArrayList<Integer> idList = new ArrayList<>();
+                for (int i = 0; i < selectedItems.size(); i++) {
+                    int item = selectedItems.keyAt(i);
+                    idList.add(item);
+                }
 
-    int totalTime = 0;
+                if (selectedItems.size() == 0) {
+                    Toast.makeText(MainActivity2.this, "Nie zaznaczono żadnych elementów.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity2.this, "Zaznaczone: " + idList, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity2.this, MainActivity3.class);
+                    intent.putExtra("idList", idList);
+                    startActivity(intent);
+                }
+            }
+        });
+    }
 
+    @Override
+    public void onItemLongClick(ListItem listItem) {
+        showDeleteEditDialog(listItem);
+    }
 
-
-    public void showDeleteEditDialog(ListItem listItem){
+    private void showDeleteEditDialog(ListItem listItem) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_edit_delete_task, null);
         builder.setView(dialogView);
@@ -50,15 +92,11 @@ public class MainActivity2 extends AppCompatActivity implements OnItemLongClickL
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 db.deleteItem(listItem);
                 refreshListView();
                 dialog.dismiss();
-
-
             }
         });
-
 
         Button editBtn = dialogView.findViewById(R.id.editBtn);
         editBtn.setOnClickListener(new View.OnClickListener() {
@@ -67,13 +105,9 @@ public class MainActivity2 extends AppCompatActivity implements OnItemLongClickL
                 db.updateListItem(listItem);
             }
         });
-
     }
 
-
-
-
-    public void showAddDialog(){
+    private void showAddDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Dodaj czynność");
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_task, null);
@@ -89,7 +123,6 @@ public class MainActivity2 extends AppCompatActivity implements OnItemLongClickL
                     String addedName = addName.getText().toString();
                     int addedTime = Integer.parseInt(addTime.getText().toString());
 
-                    // Dodaj nowy element do bazy danych
                     long id = db.insertContact(addedName, addedTime);
 
                     ListItem newItem = new ListItem(addedName, addedTime, 90);
@@ -97,15 +130,10 @@ public class MainActivity2 extends AppCompatActivity implements OnItemLongClickL
                     adapter.notifyDataSetChanged();
 
                     refreshListView();
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     Toast.makeText(MainActivity2.this, "Wprowadź ponownie aktywność", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
-
                 }
-
-
-
             }
         });
 
@@ -118,114 +146,25 @@ public class MainActivity2 extends AppCompatActivity implements OnItemLongClickL
 
         AlertDialog dialog = builder.create();
         dialog.show();
-
-
     }
-
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
-
-
-        db = new DatabaseHelper(this);
-
-        ArrayList<ListItem> dataModels = db.getAkkItems();
-
-        //AdapterView a list view
-        listView = findViewById(R.id.listview);
-
-
-        adapter = new CustomAdapter(dataModels,getApplicationContext());
-
-        adapter.setOnItemLongClickListener(this);
-//        adapter.setOnCheckedChangeListener(this);
-
-        listView.setAdapter(adapter);
-
-
-
-
-        Button btnAddToDo = findViewById(R.id.addBtn);
-        btnAddToDo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showAddDialog();
-
-
-
-            }
-        });
-
-
-        Button nextBtn = findViewById(R.id.nextCountingBtn);
-        nextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                totalTime = 0;
-
-                SparseBooleanArray selectedItems = adapter.getCheckedItems();
-                ArrayList<Integer> idList = new ArrayList<>();
-                for (int i = 0; i<selectedItems.size();i++){
-                    int item = selectedItems.keyAt(i);
-                    idList.add(item);
-                }
-
-                if(selectedItems.size()==0){
-                    Toast.makeText(MainActivity2.this, "Nie zaznaczono żadnych elementów.", Toast.LENGTH_SHORT).show();
-                }else{
-
-                    Toast.makeText(MainActivity2.this, "Zaznaczone: " + idList, Toast.LENGTH_SHORT).show();
-
-                    Intent intent = new Intent(MainActivity2.this, MainActivity3.class);
-                    intent.putExtra("idList", idList);
-                    startActivity(intent);
-
-
-                }
-
-            }
-        });
-    }
-
-
-
-
-    @Override
-    public void onItemLongClick(ListItem listItem){
-
-        showDeleteEditDialog(listItem);
-    }
-
-
-
 
     private void refreshListView() {
-        ArrayList<ListItem> dataModels = db.getAkkItems();
+        ArrayList<ListItem> dataModels = db.getAllItems();
         adapter.clear();
         adapter.addAll(dataModels);
         adapter.notifyDataSetChanged();
     }
 
-
     @Override
     public void onItemCheckedChange(int position, boolean isChecked) {
-
-
-        if(isChecked) {
+        if (isChecked) {
             ListItem listItem = adapter.getItem(position);
             int time = listItem.getTimeActivity();
             totalTime += time;
-        }else{
-
+        } else {
             ListItem listItem = adapter.getItem(position);
             int time = listItem.getTimeActivity();
             totalTime -= time;
         }
-
-
     }
 }

@@ -3,12 +3,9 @@ package com.example.timetogo.db.entity;
 public class Activitis {
 
     private static Activitis instance;
-
     private long timeToLeave;
 
-    private Activitis() {
-        // Prywatny konstruktor
-    }
+    private Activitis() {}
 
     public static Activitis getInstance() {
         if (instance == null) {

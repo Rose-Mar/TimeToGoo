@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,29 +28,6 @@ public class CustomAdapter extends ArrayAdapter<ListItem> {
     private OnCheckedChangeListener onCheckedChangeListener;
     private SparseBooleanArray checkedItems;
 
-
-    ViewHolder viewHolder;
-
-
-
-
-
-    @Override
-    public ListItem getItem(int position){
-        return itemArrayList.get(position);
-    }
-
-
-
-    public void setOnCheckedChangeListener(OnCheckedChangeListener listener) {
-        this.onCheckedChangeListener = listener;
-    }
-
-
-    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
-        this.onItemLongClickListener = listener;
-    }
-
     public CustomAdapter(ArrayList<ListItem> data, Context context) {
         super(context, R.layout.item_list_layout, data);
         this.itemArrayList = data;
@@ -60,19 +36,10 @@ public class CustomAdapter extends ArrayAdapter<ListItem> {
         checkedItems = new SparseBooleanArray();
     }
 
-    private static class ViewHolder {
-        TextView txtName;
-        TextView txtTime;
-        CheckBox checkBox;
-    }
-
-
-
-
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-
+        ViewHolder viewHolder;
 
         if (convertView == null) {
             viewHolder = new ViewHolder();
@@ -95,20 +62,15 @@ public class CustomAdapter extends ArrayAdapter<ListItem> {
             viewHolder.txtTime.setText(String.valueOf(listItem.getTimeActivity()));
             viewHolder.checkBox.setChecked(listItem.isCheck());
 
-
             convertView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-
-                    if(onItemLongClickListener != null){
+                    if (onItemLongClickListener != null) {
                         onItemLongClickListener.onItemLongClick(listItem);
                     }
-
                     return true;
-
                 }
             });
-
         }
 
         viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -122,29 +84,41 @@ public class CustomAdapter extends ArrayAdapter<ListItem> {
             }
         });
 
-
-
-
         return convertView;
     }
 
-
-    public SparseBooleanArray getCheckedItems(){
+    public SparseBooleanArray getCheckedItems() {
         SparseBooleanArray selectedItems = new SparseBooleanArray();
 
-        for (int i = 0 ; i<itemArrayList.size(); i++){
-
-            if(itemArrayList.get(i).isCheck()) {
+        for (int i = 0; i < itemArrayList.size(); i++) {
+            if (itemArrayList.get(i).isCheck()) {
                 int id = itemArrayList.get(i).getId();
                 selectedItems.put(id, true);
             }
         }
+
         return selectedItems;
     }
 
+    public void setOnCheckedChangeListener(OnCheckedChangeListener listener) {
+        this.onCheckedChangeListener = listener;
+    }
 
+    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
+        this.onItemLongClickListener = listener;
+    }
 
+    private static class ViewHolder {
+        TextView txtName;
+        TextView txtTime;
+        CheckBox checkBox;
+    }
 
+    public interface OnItemLongClickListener {
+        void onItemLongClick(ListItem listItem);
+    }
 
-
+    public interface OnCheckedChangeListener {
+        void onItemCheckedChange(int position, boolean isChecked);
+    }
 }

@@ -26,12 +26,6 @@ public class CustomAdapter3 extends ArrayAdapter<ListItem> {
     private List<ListItem> items;
 
 
-
-
-
-
-
-
     @Override
     public ListItem getItem(int position) {return items.get(position);}
 
