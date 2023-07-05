@@ -1,5 +1,7 @@
 package com.example.timetogo.db.entity;
 
+import android.os.CountDownTimer;
+
 public class ListItem {
 
     public static final String TABLE_NAME = "activities";
@@ -11,6 +13,17 @@ public class ListItem {
     private int timeActivity;
     private boolean check;
     private int id;
+    private CountDownTimer countDownTimer;
+
+    public boolean isButtonVisible() {
+        return buttonVisible;
+    }
+
+    public void setButtonVisible(boolean buttonVisible) {
+        this.buttonVisible = buttonVisible;
+    }
+
+    private boolean buttonVisible;
 
     public ListItem() {
     }
@@ -23,6 +36,7 @@ public class ListItem {
         this.nameActivity = nameActivity;
         this.timeActivity = timeActivity;
         this.id = id;
+        this.buttonVisible = true;
     }
 
     public ListItem(String nameActivity, int timeActivity, int id, boolean check) {
@@ -62,6 +76,14 @@ public class ListItem {
 
     public void setCheck(boolean check) {
         this.check = check;
+    }
+
+    public CountDownTimer getCountDownTimer() {
+        return countDownTimer;
+    }
+
+    public void setCountDownTimer(CountDownTimer countDownTimer) {
+        this.countDownTimer = countDownTimer;
     }
 
     public static final String CREATE_TABLE =

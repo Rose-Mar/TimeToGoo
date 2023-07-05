@@ -8,10 +8,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.timetogo.MainActivity3;
 import com.example.timetogo.R;
 import com.example.timetogo.db.entity.ListItem;
 
@@ -24,17 +26,21 @@ public class CustomAdapter3 extends ArrayAdapter<ListItem> {
     private Context context;
     private int resource;
     private List<ListItem> items;
+    private MainActivity3 mainActivity3;
+    private CountDownTimer countDownTimer;
+    private int selectedItemIndex = -1;
 
 
     @Override
     public ListItem getItem(int position) {return items.get(position);}
 
 
-    public CustomAdapter3(Context context, int resource, List<ListItem> items){
+    public CustomAdapter3(Context context, int resource, List<ListItem> items, MainActivity3 mainActivity3){
         super(context,resource,items);
         this.context = context;
         this.resource = resource;
         this.items = items;
+        this.mainActivity3 = mainActivity3;
 
 
     }
@@ -47,6 +53,11 @@ public class CustomAdapter3 extends ArrayAdapter<ListItem> {
         long timeInMilliseconds;
 
     }
+
+    public CountDownTimer getCountDownTimer() {
+        return countDownTimer;
+    }
+
 
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         ViewHolder viewHolder;
@@ -67,53 +78,86 @@ public class CustomAdapter3 extends ArrayAdapter<ListItem> {
 
         ListItem listItem = getItem(position);
 
-//
-//        TextView nameTextView = convertView.findViewById(R.id.activityNameTextView);
-//        timeTextView = convertView.findViewById(R.id.activityTimeTextView);
-//        Button startNowButton = convertView.findViewById(R.id.startNowButton);
-
         if (listItem != null) {
 
 
             viewHolder.nameTextView.setText(listItem.getNameActivity());
             viewHolder.timeTextView.setText(String.valueOf(listItem.getTimeActivity()));
-            viewHolder.startNowButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
 
-                    if (viewHolder.countDownTimer != null) {
-                        viewHolder.countDownTimer.cancel();
-                        viewHolder.countDownTimer = null;
-                        viewHolder.startNowButton.setText("Start");
-                    } else {
-                        viewHolder.timeInMilliseconds = ((long) listItem.getTimeActivity()) * 1000 * 60;
-                        viewHolder.countDownTimer = new CountDownTimer(viewHolder.timeInMilliseconds, 1000) {
-                            @Override
-                            public void onTick(long millisUntilFinished) {
-                                viewHolder.timeInMilliseconds = millisUntilFinished;
-                                updateCountdownText(viewHolder);
+            if(position ==selectedItemIndex){
+                viewHolder.startNowButton.setVisibility(View.GONE);
+            } else {
 
+                viewHolder.startNowButton.setVisibility(View.VISIBLE);
+                viewHolder.startNowButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        selectedItemIndex = position;
+                        notifyDataSetChanged();
+
+                        for(int i =0; i<items.size();i++){
+                            if(i !=selectedItemIndex){
+                                items.get(i).setButtonVisible(false);
+                            }
+                        }
+
+
+                        if (viewHolder.countDownTimer != null) {
+
+                            mainActivity3.startCountdown();
+                            viewHolder.countDownTimer.cancel();
+                            viewHolder.countDownTimer = null;
+                            viewHolder.startNowButton.setText("Start");
+                            for (ListItem item :items){
+                                item.setButtonVisible(true);
                             }
 
-                            @Override
-                            public void onFinish() {
 
-                            }
-                        }.start();
-                        viewHolder.startNowButton.setText("Stop");
-                        updateCountdownText(viewHolder);
-//                int updatedTime = listItem.getTimeActivity() - 1;
+                        } else {
 
+
+                            mainActivity3.stopCountdown();
+                            viewHolder.timeInMilliseconds = ((long) listItem.getTimeActivity()) * 1000 * 60;
+                            viewHolder.countDownTimer = new CountDownTimer(viewHolder.timeInMilliseconds, 1000) {
+                                @Override
+                                public void onTick(long millisUntilFinished) {
+                                    viewHolder.timeInMilliseconds = millisUntilFinished;
+                                    updateCountdownText(viewHolder);
+                                    if (mainActivity3 != null) {
+                                        mainActivity3.stopCountdown();
+                                    }
+                                }
+
+                                @Override
+                                public void onFinish() {
+
+                                    viewHolder.startNowButton.setText("Ended");
+
+                                }
+
+                            }.start();
+
+//                        mainActivity3.startCountdown();
+                            viewHolder.startNowButton.setText("Stop");
+                            updateCountdownText(viewHolder);
+//
+
+
+                        }
                     }
-                }
-            });
+                });
 
+            }
+            if(listItem.isButtonVisible()){
+                viewHolder.startNowButton.setVisibility(View.VISIBLE);
+            }else {
+                viewHolder.startNowButton.setVisibility(View.GONE);
+            }
 
 
 
         }
 
-//        viewHolder.timeTextView = convertView.findViewById(R.id.activityTimeTextView);
         return convertView;
     }
 

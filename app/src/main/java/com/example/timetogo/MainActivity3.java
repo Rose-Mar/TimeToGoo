@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +33,10 @@ public class MainActivity3 extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main3);
 
@@ -49,8 +54,10 @@ public class MainActivity3 extends AppCompatActivity {
             }
         }
 
+
+
         listView = findViewById(R.id.listCountView);
-        CustomAdapter3 adapter = new CustomAdapter3(MainActivity3.this, R.layout.ltem_count, selectedItems);
+        CustomAdapter3 adapter = new CustomAdapter3(MainActivity3.this, R.layout.ltem_count, selectedItems, this);
         listView.setAdapter(adapter);
 
         currentTimeMillis = System.currentTimeMillis();
@@ -60,14 +67,30 @@ public class MainActivity3 extends AppCompatActivity {
 
         countdownText = findViewById(R.id.timerTextView);
 
-        startCountdown();
-    }
-
-    private void startCountdown() {
         timeLeftInMilliseconds = selectedTimeInMillis - currentTimeMillis - (totalTime * 1000 * 60);
 
+        startCountdown();
+
+
+        Button button;
+        button = findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopCountdown();
+            }
+        });
+    }
+
+    public void dziala(){
+        stopCountdown();
+    }
+
+    public void startCountdown() {
+
+
         Toast.makeText(MainActivity3.this, "totalTime: " + totalTime, Toast.LENGTH_SHORT).show();
-        Toast.makeText(MainActivity3.this, "czas: " + timeLeftInMilliseconds, Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity3.this, "time: " + timeLeftInMilliseconds, Toast.LENGTH_SHORT).show();
         Toast.makeText(MainActivity3.this, "currentTime: " + currentTimeMillis, Toast.LENGTH_SHORT).show();
         Toast.makeText(MainActivity3.this, "selectedTime: " + selectedTimeInMillis, Toast.LENGTH_SHORT).show();
 
@@ -83,6 +106,16 @@ public class MainActivity3 extends AppCompatActivity {
                 // działania po zakończeniu odliczania
             }
         }.start();
+    }
+
+    public void stopCountdown(){
+        if(countDownTimer != null){
+            countDownTimer.cancel();
+            countDownTimer = null;
+            updateCountdownText();
+        }
+
+
     }
 
     private void updateCountdownText() {
